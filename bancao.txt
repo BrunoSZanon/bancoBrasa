@@ -1,0 +1,103 @@
+-- MySQL Workbench Synchronization
+-- Generated: 2023-11-13 11:28
+-- Model: New Model
+-- Version: 1.0
+-- Project: Name of the project
+-- Author: aluno
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+CREATE SCHEMA IF NOT EXISTS `imobiliaria` DEFAULT CHARACTER SET utf8 ;
+
+CREATE TABLE IF NOT EXISTS `imobiliaria`.`cliente` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `email` VARCHAR(99) NULL DEFAULT NULL,
+  `senha` VARCHAR(40) NULL DEFAULT NULL,
+  `telefone` VARCHAR(15) NULL DEFAULT NULL,
+  `cpf` VARCHAR(18) NULL DEFAULT NULL,
+  `nome` VARCHAR(45) NULL DEFAULT NULL,
+  `agendamento_id` INT(11) NOT NULL,
+  PRIMARY KEY (`id`, `agendamento_id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
+  INDEX `fk_cliente_agendamento1_idx` (`agendamento_id` ASC) VISIBLE,
+  CONSTRAINT `fk_cliente_agendamento1`
+    FOREIGN KEY (`agendamento_id`)
+    REFERENCES `imobiliaria`.`agendamento` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `imobiliaria`.`imoveis` (
+  `id` INT(11) NOT NULL,
+  `preço` VARCHAR(45) NULL DEFAULT NULL,
+  `nquartos` INT(11) NULL DEFAULT NULL,
+  `nbanheiros` INT(11) NULL DEFAULT NULL,
+  `cidade` VARCHAR(100) NULL DEFAULT NULL,
+  `bairro` VARCHAR(100) NULL DEFAULT NULL,
+  `rua` VARCHAR(100) NULL DEFAULT NULL,
+  `cep` VARCHAR(10) NULL DEFAULT NULL,
+  `nome_imovel` VARCHAR(100) NULL DEFAULT NULL,
+  `complemento` VARCHAR(100) NULL DEFAULT NULL,
+  `descricao` VARCHAR(600) NULL DEFAULT NULL,
+  `imagem` VARCHAR(1000) NULL DEFAULT NULL,
+  `categoria_id` INT(11) NOT NULL,
+  PRIMARY KEY (`id`, `categoria_id`),
+  INDEX `fk_imoveis_categoria1_idx` (`categoria_id` ASC) VISIBLE,
+  CONSTRAINT `fk_imoveis_categoria1`
+    FOREIGN KEY (`categoria_id`)
+    REFERENCES `imobiliaria`.`categoria` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `imobiliaria`.`categoria` (
+  `id` INT(11) NOT NULL,
+  `nome` VARCHAR(45) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `imobiliaria`.`funcionario` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `email` VARCHAR(99) NULL DEFAULT NULL,
+  `senha` VARCHAR(40) NULL DEFAULT NULL,
+  `telefone` VARCHAR(15) NULL DEFAULT NULL,
+  `cpf` VARCHAR(18) NULL DEFAULT NULL,
+  `nome` VARCHAR(45) NULL DEFAULT NULL,
+  `agendamento_id` INT(11) NOT NULL,
+  `agendamento_imoveis_id` INT(11) NOT NULL,
+  PRIMARY KEY (`id`, `agendamento_id`, `agendamento_imoveis_id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
+  INDEX `fk_funcionario_agendamento1_idx` (`agendamento_id` ASC, `agendamento_imoveis_id` ASC) VISIBLE,
+  CONSTRAINT `fk_funcionario_agendamento1`
+    FOREIGN KEY (`agendamento_id` , `agendamento_imoveis_id`)
+    REFERENCES `imobiliaria`.`agendamento` (`id` , `imoveis_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `imobiliaria`.`agendamento` (
+  `id` INT(11) NOT NULL,
+  `data` DATE NULL DEFAULT NULL,
+  `horario` DATETIME NULL DEFAULT NULL,
+  `agendamentocol` VARCHAR(45) NULL DEFAULT NULL,
+  `imoveis_id` INT(11) NOT NULL,
+  PRIMARY KEY (`id`, `imoveis_id`),
+  INDEX `fk_agendamento_imoveis1_idx` (`imoveis_id` ASC) VISIBLE,
+  CONSTRAINT `fk_agendamento_imoveis1`
+    FOREIGN KEY (`imoveis_id`)
+    REFERENCES `imobiliaria`.`imoveis` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
